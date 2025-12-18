@@ -14,10 +14,10 @@ const config = {
   favicon: 'img/favicon.png',
 
   // Set the production url of your site here
-  url: 'https://your-book.github.io',
+  url: 'https://your-username.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub Pages deployment, it's often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/physical-ai-book/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub Pages, you don't need these.
@@ -45,7 +45,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/your-username/book-website/edit/main/website/',
+            'https://github.com/your-username/physical-ai-book/edit/main/website/',
         },
         blog: false, // Disable blog functionality
         theme: {
