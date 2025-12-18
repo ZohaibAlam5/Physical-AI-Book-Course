@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <title>Physical AI &amp; Humanoid Robotics Book Icon - Neon Style</title>
+  <defs>
+    <linearGradient id="bookBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a0f35;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3d1e6d;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="neuralGlow" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" style="stop-color:#00d2ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3a7bd5;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="circuitGlow" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" style="stop-color:#f70fff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff5e00;stop-opacity:1" />
+    </linearGradient>
+
+    <filter id="neonBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <path d="M64,24 C40,24 20,32 12,40 L12,104 C20,96 40,88 64,88 C88,88 108,96 116,104 L116,40 C108,32 88,24 64,24 Z" fill="url(#bookBg)" stroke="#5e35b1" stroke-width="2"/>
+  <rect x="62" y="24" width="4" height="64" fill="#7c4dff" opacity="0.5" />
+  <path d="M64,24 L64,88" stroke="#00d2ff" stroke-width="2" filter="url(#neonBlur)" stroke-dasharray="4,2"/>
+
+  <g transform="translate(12, 30)" filter="url(#neonBlur)">
+    <path d="M10,20 C15,10 30,5 40,15 S 50,40 45,50" stroke="url(#neuralGlow)" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M5,35 C15,35 25,30 35,40" stroke="url(#neuralGlow)" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M30,10 L40,15 L35,40" stroke="url(#neuralGlow)" stroke-width="1.5" fill="none"/>
+    
+    <circle cx="10" cy="20" r="3" fill="#00d2ff"/>
+    <circle cx="40" cy="15" r="3" fill="#00d2ff"/>
+    <circle cx="45" cy="50" r="3" fill="#00d2ff"/>
+    <circle cx="5" cy="35" r="3" fill="#00d2ff"/>
+    <circle cx="35" cy="40" r="3" fill="#ffffff"/>
+  </g>
+
+  <g transform="translate(68, 30)" filter="url(#neonBlur)">
+    <path d="M10,15 L30,15 L35,10 M35,20 L45,20 M10,35 L15,35 L15,50 M30,50 L45,50 L45,35" stroke="url(#circuitGlow)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <rect x="8" y="13" width="4" height="4" fill="#f70fff"/>
+    <rect x="43" y="48" width="4" height="4" fill="#f70fff"/>
+    
+    <circle cx="30" cy="32" r="8" stroke="#ff5e00" stroke-width="2" fill="none"/>
+    <circle cx="30" cy="32" r="4" fill="#ffffff">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" />
+    </circle>
+    <rect x="28" y="42" width="4" height="8" fill="#ff5e00"/>
+  </g>
+
+  <text x="64" y="118" font-family="Arial, sans-serif" font-weight="bold" font-size="8" fill="#8c5eff" text-anchor="middle" letter-spacing="1">PHYSICAL-AI &amp; ROBOTICS</text>
+</svg>

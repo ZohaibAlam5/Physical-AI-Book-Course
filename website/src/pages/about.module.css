@@ -1,0 +1,169 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroBanner {
+  padding: 3rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem 0;
+  }
+}
+
+.main {
+  padding: 2rem 0;
+}
+
+.aboutSection {
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.aboutSection h2 {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-emphasis-900);
+}
+
+.aboutIntro {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: var(--ifm-color-emphasis-800);
+  margin-bottom: 2rem;
+}
+
+.bookStats {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.statItem {
+  text-align: center;
+  flex: 1;
+  min-width: 120px;
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: var(--ifm-font-weight-bold);
+  color: var(--ifm-color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.statLabel {
+  font-size: 1rem;
+  color: var(--ifm-color-emphasis-700);
+  font-weight: var(--ifm-font-weight-semibold);
+}
+
+.moduleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.moduleCard,
+.audienceCard,
+.techCard {
+  background-color: var(--ifm-color-emphasis-100);
+  padding: 1.5rem;
+  border-radius: var(--ifm-global-radius);
+  transition: transform var(--ifm-transition-fast) ease, box-shadow var(--ifm-transition-fast) ease;
+}
+
+.moduleCard:hover,
+.audienceCard:hover,
+.techCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.moduleCard h3,
+.audienceCard h3,
+.techCard h3 {
+  margin-top: 0;
+  color: var(--ifm-color-primary);
+}
+
+.audienceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.learningApproach,
+.usageGuidelines {
+  padding-left: 1.5rem;
+}
+
+.learningApproach li,
+.usageGuidelines li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.techGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.ctaSection {
+  text-align: center;
+  margin: 3rem 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.ctaSection .button {
+  margin: 0 0.5rem;
+  min-width: 150px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bookStats {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .moduleGrid,
+  .audienceGrid,
+  .techGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaSection .button {
+    display: block;
+    margin: 0.5rem auto;
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .statItem {
+    min-width: auto;
+  }
+
+  .statNumber {
+    font-size: 2rem;
+  }
+}

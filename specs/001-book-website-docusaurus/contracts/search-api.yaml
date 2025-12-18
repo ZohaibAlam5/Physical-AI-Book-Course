@@ -1,0 +1,161 @@
+openapi: 3.0.0
+info:
+  title: Book Website Search API
+  description: API for searching book content and providing external web search capabilities
+  version: 1.0.0
+servers:
+  - url: https://book-website.example.com/api
+    description: Production server
+  - url: http://localhost:3000/api
+    description: Development server
+
+paths:
+  /search:
+    get:
+      summary: Search book content and external sources
+      description: Search across book chapters and external web sources
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query string
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: false
+          description: Type of search ('local', 'external', or 'hybrid')
+          schema:
+            type: string
+            enum: [local, external, hybrid]
+            default: hybrid
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of results to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  query:
+                    type: string
+                    description: The original search query
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Unique identifier for the result
+                        title:
+                          type: string
+                          description: Title of the result
+                        content_snippet:
+                          type: string
+                          description: Snippet of content containing the search terms
+                        url:
+                          type: string
+                          description: URL to the full content
+                        source:
+                          type: string
+                          enum: [book, external]
+                          description: Source of the result
+                        relevance_score:
+                          type: number
+                          format: float
+                          description: Relevance score (0-1)
+                        metadata:
+                          type: object
+                          description: Additional metadata about the result
+                          properties:
+                            module:
+                              type: string
+                              description: Module if from book content
+                            chapter:
+                              type: string
+                              description: Chapter if from book content
+                            section:
+                              type: string
+                              description: Section if from book content
+                  total_results:
+                    type: integer
+                    description: Total number of results found
+                  execution_time_ms:
+                    type: integer
+                    description: Time taken to execute the search in milliseconds
+        '400':
+          description: Invalid query parameters
+        '500':
+          description: Internal server error
+
+  /content/{module}/{chapter}:
+    get:
+      summary: Get specific chapter content
+      description: Retrieve the content of a specific chapter in the book
+      parameters:
+        - name: module
+          in: path
+          required: true
+          description: Module identifier
+          schema:
+            type: string
+        - name: chapter
+          in: path
+          required: true
+          description: Chapter identifier
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Chapter content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Chapter unique identifier
+                  title:
+                    type: string
+                    description: Chapter title
+                  content:
+                    type: string
+                    description: Full chapter content in Markdown format
+                  module:
+                    type: string
+                    description: Module this chapter belongs to
+                  previous_chapter:
+                    type: string
+                    description: ID of previous chapter for navigation
+                  next_chapter:
+                    type: string
+                    description: ID of next chapter for navigation
+                  metadata:
+                    type: object
+                    description: Additional metadata
+                    properties:
+                      word_count:
+                        type: integer
+                        description: Number of words in the chapter
+                      reading_time:
+                        type: integer
+                        description: Estimated reading time in minutes
+                      last_updated:
+                        type: string
+                        format: date-time
+                        description: Last update timestamp
+        '404':
+          description: Chapter not found
+        '500':
+          description: Internal server error

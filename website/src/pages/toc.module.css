@@ -1,0 +1,125 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroBanner {
+  padding: 3rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem 0;
+  }
+}
+
+.main {
+  padding: 2rem 0;
+}
+
+.tocSection {
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  background-color: var(--ifm-color-emphasis-100);
+  border-radius: var(--ifm-global-radius);
+}
+
+.tocSection h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--ifm-color-primary);
+}
+
+.chapterList {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.chapterItem {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border-left: 3px solid transparent;
+  transition: all var(--ifm-transition-fast) ease;
+}
+
+.chapterItem:hover {
+  background-color: var(--ifm-color-emphasis-200);
+  border-left-color: var(--ifm-color-primary);
+  border-radius: 0 var(--ifm-global-radius) var(--ifm-global-radius) 0;
+}
+
+.chapterLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.chapterLink:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.chapterNumber {
+  display: inline-block;
+  min-width: 4rem;
+  padding: 0.25rem 0.5rem;
+  margin-right: 1rem;
+  background-color: var(--ifm-color-primary);
+  color: white;
+  border-radius: var(--ifm-global-radius);
+  font-weight: bold;
+  text-align: center;
+}
+
+.chapterTitle {
+  flex: 1;
+  font-size: 1.1rem;
+  font-weight: var(--ifm-font-weight-semibold);
+}
+
+.tocNavigation {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.tocNavigation .button {
+  min-width: 120px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tocNavigation {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .tocNavigation .button {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .chapterLink {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chapterNumber {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .chapterTitle {
+    font-size: 1rem;
+  }
+}

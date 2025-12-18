@@ -1,0 +1,84 @@
+.bookNavigation {
+  margin: 2rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.navigationContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.navLink {
+  flex: 1;
+}
+
+.navCenter {
+  flex: 1;
+  text-align: center;
+}
+
+.prevLink, .nextLink {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: var(--ifm-global-radius);
+  text-decoration: none;
+  font-weight: var(--ifm-font-weight-semibold);
+  transition: all var(--ifm-transition-fast) ease;
+}
+
+.prevLink {
+  background-color: var(--ifm-color-emphasis-100);
+}
+
+.prevLink:hover {
+  background-color: var(--ifm-color-emphasis-200);
+  text-decoration: none;
+}
+
+.nextLink {
+  background-color: var(--ifm-color-emphasis-100);
+  text-align: right;
+}
+
+.nextLink:hover {
+  background-color: var(--ifm-color-emphasis-200);
+  text-decoration: none;
+}
+
+.homeLink {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: var(--ifm-color-primary);
+  color: white !important;
+  border-radius: var(--ifm-global-radius);
+  text-decoration: none;
+  font-weight: var(--ifm-font-weight-semibold);
+  transition: all var(--ifm-transition-fast) ease;
+}
+
+.homeLink:hover {
+  background-color: var(--ifm-color-primary-dark);
+  text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navigationContainer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .navLink {
+    width: 100%;
+    text-align: center;
+  }
+
+  .navCenter {
+    order: -1; /* Put home link at the top on mobile */
+  }
+}
