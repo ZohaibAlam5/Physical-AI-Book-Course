@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: rag-chatbot-backend
+    name: rag-chatbot-api
     env: python
-    region: frankfurt  # or oregon, or your preferred region
-    buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt
-    startCommand: cd backend && uvicorn src.api.v1.chat:app --host 0.0.0.0 --port $PORT
+    region: oregon  # or frankfurt, or your preferred region
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: gunicorn src.api.v1.chat:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
     envVars:
       - key: PORT
         sync: false

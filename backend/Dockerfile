@@ -10,20 +10,16 @@ WORKDIR /app
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         build-essential \
-        curl \
-        git \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first to leverage Docker cache
-COPY requirements-hf.txt requirements.txt
+COPY requirements.txt .
 RUN pip install --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project
 COPY . .
 
-# Expose port
-EXPOSE 7860
+EXPOSE 8000
 
-# Set the command to run the Gradio app
-CMD ["python", "app.py"]
+CMD ["gunicorn", "src.api.v1.chat:app", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
