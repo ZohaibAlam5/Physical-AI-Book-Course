@@ -1,17 +1,16 @@
 FROM python:3.10-slim
 
-# Install system dependencies needed for building Python packages
-RUN apt-get update && apt-get install -y \
+WORKDIR /app
+
+# Update package list and install minimal build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
-    software-properties-common \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
