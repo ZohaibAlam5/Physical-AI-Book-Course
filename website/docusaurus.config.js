@@ -14,15 +14,15 @@ const config = {
   favicon: 'img/favicon.png',
 
   // Set the production url of your site here
-  url: 'https://your-username.github.io',
+  url: 'https://ZohaibAlam5.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub Pages deployment, it's often '/<projectName>/'
-  baseUrl: '/physical-ai-book/',
+  baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub Pages, you don't need these.
-  organizationName: 'your-username', // Usually your GitHub org/user name.
-  projectName: 'physical-ai-book', // Usually your repo name.
+  organizationName: 'ZohaibAlam5', // Usually your GitHub org/user name.
+  projectName: 'Physical-AI-Book-Course', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -45,7 +45,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/your-username/physical-ai-book/edit/main/website/',
+            'https://github.com/ZohaibAlam5/Physical-AI-Book-Course/edit/main/website/',
         },
         blog: false, // Disable blog functionality
         theme: {
@@ -94,7 +94,7 @@ const config = {
             value: '<div id="theme-toggle-container"></div>',
           },
           {
-            href: 'https://github.com/your-username/physical-ai-book',
+            href: 'https://github.com/ZohaibAlam5/Physical-AI-Book-Course',
             label: 'GitHub',
             position: 'right',
           },
@@ -142,7 +142,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/your-username/physical-ai-book',
+                href: 'https://github.com/ZohaibAlam5/Physical-AI-Book-Course',
               },
             ],
           },
