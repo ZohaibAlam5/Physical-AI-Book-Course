@@ -1,73 +1,79 @@
-# Physical AI & Humanoid Robotics Book - RAG Chatbot Backend
+---
+title: Physical AI & Humanoid Robotics Assistant
+emoji: 🤖
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+license: mit
+---
 
-Backend service for the RAG chatbot that powers the question-answering feature for the Physical AI & Humanoid Robotics book.
+# Physical AI & Humanoid Robotics Assistant
+
+This is a RAG (Retrieval-Augmented Generation) chatbot that can answer questions about the Physical AI & Humanoid Robotics book content.
 
 ## Overview
 
-This FastAPI-based service provides:
-- RAG (Retrieval-Augmented Generation) orchestration
-- Integration with Qdrant vector store
-- Google Gemini API integration
-- API endpoints for chat functionality
+This application uses a Retrieval-Augmented Generation (RAG) system to answer questions about the Physical AI & Humanoid Robotics book. It retrieves relevant sections from the book and uses them to generate accurate responses.
 
 ## Prerequisites
 
-- Python 3.11+
 - Qdrant Cloud account with API key
-- Google AI API key for Gemini
+- Google AI API key for Gemini (optional, only needed for LLM responses)
 
-## Setup
+## Deployment on Hugging Face Spaces
+
+This application can be deployed directly on Hugging Face Spaces using the Docker SDK. The interface is built with Gradio for easy interaction.
+
+### Environment Variables
+
+To run this Space, you'll need to set the following environment variables:
+
+- `QDRANT_URL`: URL for your Qdrant vector database
+- `QDRANT_API_KEY`: API key for Qdrant (if required)
+- `QDRANT_COLLECTION_NAME`: Name of the collection containing book content
+- `GEMINI_API_KEY`: Google Gemini API key (optional, only needed for LLM responses)
+
+### How to Use
+
+1. Ask questions about the Physical AI & Humanoid Robotics book content
+2. The assistant will retrieve relevant information and provide accurate answers
+3. The system uses vector similarity search to find the most relevant book sections
+
+## Local Development
+
+If you want to run the application locally:
 
 1. Install dependencies:
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-hf.txt
 ```
 
 2. Configure environment variables:
 ```bash
-cp .env.example .env
-# Edit .env with your API keys and configuration
+# Set environment variables for QDRANT and GEMINI
 ```
 
-3. Run the server:
+3. Run the Gradio interface:
 ```bash
-uvicorn src.api.v1.chat:app --reload --host 0.0.0.0 --port 8000
+python app.py
 ```
 
-## API Endpoints
+## API Endpoints (when running as FastAPI)
 
-- `POST /v1/chat` - Submit a question to the RAG chatbot
-- `GET /v1/health` - Health check endpoint
+- `POST /chat` - Submit a question to the RAG chatbot
+- `GET /health` - Health check endpoint
 
 ## Architecture
 
 The backend follows a service-oriented architecture:
 - Models: Data models for queries, responses, and retrieved chunks
 - Services: Business logic for RAG orchestration, Qdrant integration, and Gemini API
-- API: FastAPI endpoints
+- API: FastAPI endpoints with Gradio interface for Hugging Face Spaces
 
-## Environment Variables
+## Technical Details
 
-- `GEMINI_API_KEY`: Google AI API key for Gemini
-- `QDRANT_URL`: Qdrant cluster URL
-- `QDRANT_API_KEY`: Qdrant API key
-- `QDRANT_COLLECTION_NAME`: Name of the collection in Qdrant
-- `DEBUG`: Enable debug mode
-- `RATE_LIMIT_REQUESTS`: Number of requests allowed per window
-- `RATE_LIMIT_WINDOW`: Time window in seconds for rate limiting
-
-## Indexing Book Content
-
-To index the book content to Qdrant, run:
-
-```bash
-python src/scripts/index_book_content.py
-```
-
-This will:
-- Process all markdown files in the `website/docs` directory
-- Chunk the content semantically
-- Generate embeddings using Google's embedding model
-- Index the content to your Qdrant collection
-
-The indexing process may take several minutes depending on the size of your book content.
+- Uses Sentence Transformers for local embeddings
+- Qdrant for vector storage and similarity search
+- Google Gemini for response generation
+- Built with FastAPI and Gradio
