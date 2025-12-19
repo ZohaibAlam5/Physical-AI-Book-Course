@@ -5,7 +5,7 @@ import { initAccessibilityFeatures } from '../utils/accessibilityUtils';
 import apiConfig from '../utils/apiConfig';
 
 // Dynamically import the chatbot widget to avoid SSR issues
-const ChatbotWidget = React.lazy(() => import('../../../../frontend/src/components/ChatbotWidget'));
+const ChatbotWidget = React.lazy(() => import('./ChatbotWidget'));
 
 // This is the client-side entry point that wraps the entire app
 export default function Root({ children }) {

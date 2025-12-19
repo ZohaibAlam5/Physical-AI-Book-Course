@@ -20,7 +20,7 @@ This document outlines the responsiveness improvements made to ensure the Physic
 - Changed from 4 equal columns to responsive column behavior:
   - Desktop (≥997px): 4 columns (25% each)
   - Tablet (768px-996px): 2 columns (50% each)
-  - Mobile (<768px): 1 column (100% each)
+  - Mobile (&lt;768px): 1 column (100% each)
 
 ### Content Adjustments
 - Added responsive font sizes for better readability on small screens
