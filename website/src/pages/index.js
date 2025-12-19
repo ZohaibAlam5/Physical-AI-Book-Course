@@ -44,28 +44,28 @@ export default function Home() {
           <section className={styles.features}>
             <div className="container">
               <div className="row">
-                <div className="col col--3">
+                <div className="col col--3 col--offset-0">
                   <h2>Physical AI Foundations</h2>
                   <p>Start with Module 1 to build a solid foundation in embodied intelligence and ROS 2 fundamentals.</p>
                   <Link className="button button--primary" to="/docs/module-1/chapter-1">
                     Begin Module 1
                   </Link>
                 </div>
-                <div className="col col--3">
+                <div className="col col--3 col--offset-0">
                   <h2>Digital Twins & Simulation</h2>
                   <p>Explore advanced simulation techniques and digital twin technologies in Module 2.</p>
                   <Link className="button button--primary" to="/docs/module-2/chapter-1">
                     Explore Module 2
                   </Link>
                 </div>
-                <div className="col col--3">
+                <div className="col col--3 col--offset-0">
                   <h2>Perception & Navigation</h2>
                   <p>Master perception systems, navigation, and AI robot brain concepts in Module 3.</p>
                   <Link className="button button--primary" to="/docs/module-3/chapter-1">
                     Explore Module 3
                   </Link>
                 </div>
-                <div className="col col--3">
+                <div className="col col--3 col--offset-0">
                   <h2>Vision-Language-Action</h2>
                   <p>Build complete autonomous humanoid systems with VLA paradigms in Module 4.</p>
                   <Link className="button button--primary" to="/docs/module-4/chapter-1">

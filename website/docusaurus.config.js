@@ -236,6 +236,11 @@ const config = {
   clientModules: [
     require.resolve('./src/components/Root.js'),
   ],
+
+  // Pass environment variables to the client
+  customFields: {
+    CHATBOT_API_URL: process.env.CHATBOT_API_URL || process.env.REACT_APP_API_URL || 'http://localhost:8000',
+  },
 };
 
 module.exports = config;

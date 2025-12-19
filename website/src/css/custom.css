@@ -666,3 +666,189 @@ html[data-theme='dark'] {
   --ifm-color-emphasis-900: #e5e7e9;
   --ifm-color-emphasis-1000: #ffffff;
 }
+
+/* Enhanced navbar responsiveness */
+.navbar {
+  flex-wrap: wrap;
+}
+
+.navbar__inner {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.navbar__items {
+  flex-wrap: wrap;
+}
+
+.navbar__item {
+  margin-right: 0.5rem;
+}
+
+.navbar__link {
+  padding: 0.5rem 0.75rem !important;
+  font-size: 0.9rem;
+}
+
+/* Mobile navbar adjustments */
+@media (max-width: 996px) {
+  .navbar__items {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navbar__items--right {
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+  }
+
+  .navbar-sidebar__item {
+    padding: 0.5rem 0;
+  }
+
+  .navbar-sidebar__items .navbar__item {
+    width: 100%;
+    margin: 0.25rem 0;
+  }
+
+  .navbar-sidebar__items .navbar__link {
+    padding: 0.75rem 1rem !important;
+  }
+
+  /* Adjust for the chatbot widget which appears on all pages */
+  .chatbot-widget {
+    bottom: 80px; /* Adjust position to avoid overlapping with mobile navbar */
+  }
+}
+
+/* Adjust chatbot widget positioning for mobile */
+@media (max-width: 768px) {
+  .chatbot-widget {
+    bottom: 100px; /* More space for mobile navigation */
+    right: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
+  }
+
+  .chat-toggle-button {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 15px;
+  }
+
+  .chat-window {
+    width: calc(100% - 20px);
+    height: 50vh;
+    max-height: 400px;
+    bottom: 110px;
+    right: 10px;
+    left: auto;
+  }
+}
+
+/* Improve mobile menu toggle button */
+.navbar__toggle {
+  align-self: center;
+}
+
+/* Better mobile menu overlay */
+.navbar-sidebar {
+  z-index: 1001; /* Ensure it's above the chatbot widget */
+}
+
+/* Adjust container padding for mobile */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .container.padding-vert--lg {
+    padding: 1rem 1rem;
+  }
+}
+
+/* Mobile-friendly sidebar adjustments */
+@media (max-width: 996px) {
+  .sidebar {
+    position: fixed;
+    top: var(--ifm-navbar-height);
+    height: calc(100vh - var(--ifm-navbar-height));
+    z-index: 100;
+  }
+}
+
+/* Adjust main content for mobile */
+.main-wrapper {
+  min-height: calc(100vh - var(--ifm-navbar-height));
+}
+
+/* Mobile-friendly table of contents */
+.table-of-contents {
+  font-size: 0.9rem;
+}
+
+.table-of-contents li {
+  margin-bottom: 0.25rem;
+}
+
+/* Better responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile-friendly code blocks */
+.prism-code {
+  font-size: 0.85rem;
+}
+
+/* Adjust for mobile touch targets */
+button,
+a.button,
+.navbar__link {
+  min-height: 44px; /* Minimum touch target size for accessibility */
+  min-width: 44px;
+}
+
+/* Better mobile navigation flow */
+@media (max-width: 996px) {
+  .navbar__items--left,
+  .navbar__items--right {
+    flex: 1 1 auto;
+  }
+
+  .navbar__items--right {
+    justify-content: flex-end;
+  }
+
+  /* Ensure navbar items wrap properly */
+  .navbar__item {
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Make sure the theme toggle container doesn't cause overflow */
+  #theme-toggle-container {
+    min-width: auto;
+    margin: 0;
+  }
+}
+
+/* Adjust for very small screens */
+@media (max-width: 576px) {
+  .navbar__brand {
+    max-width: 40%;
+  }
+
+  .navbar__title {
+    font-size: 1rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .navbar-sidebar__brand {
+    padding: 0.5rem 1rem;
+  }
+}

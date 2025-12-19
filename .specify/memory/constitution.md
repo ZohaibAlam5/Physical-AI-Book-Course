@@ -53,8 +53,7 @@ All AI behavior and data usage must be transparent. All diagrams, examples, and 
 ### RAG Chatbot Requirements
 - Chatbot must be embedded within the published book UI
 - Backend framework: FastAPI
-- LLM integration: OpenAI Agents / ChatKit SDKs
-- Relational database: Neon Serverless Postgres
+- LLM integration: Google Gemini via ChatKit SDKs
 - Retrieval must support: entire book content AND user-selected text only (selection-based querying)
 - Responses must cite relevant book sections and clearly state when answers cannot be derived from available content
 

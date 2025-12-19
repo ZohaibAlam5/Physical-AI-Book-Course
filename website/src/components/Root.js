@@ -2,6 +2,10 @@ import React from 'react';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import injectThemeToggle from '../utils/injectThemeToggle';
 import { initAccessibilityFeatures } from '../utils/accessibilityUtils';
+import apiConfig from '../utils/apiConfig';
+
+// Dynamically import the chatbot widget to avoid SSR issues
+const ChatbotWidget = React.lazy(() => import('../../../../frontend/src/components/ChatbotWidget'));
 
 // This is the client-side entry point that wraps the entire app
 export default function Root({ children }) {
@@ -11,5 +15,12 @@ export default function Root({ children }) {
     initAccessibilityFeatures();
   }, []);
 
-  return <ThemeProvider>{children}</ThemeProvider>;
+  return (
+    <ThemeProvider>
+      {children}
+      <React.Suspense fallback={null}>
+        <ChatbotWidget apiBaseUrl={apiConfig.API_BASE_URL} />
+      </React.Suspense>
+    </ThemeProvider>
+  );
 }

@@ -1,0 +1,208 @@
+openapi: 3.0.3
+info:
+  title: RAG Chatbot API for Physical AI & Humanoid Robotics Book
+  description: API for question-answering service based on book content using Google Gemini
+  version: 1.0.0
+  contact:
+    name: Book Development Team
+    email: support@physicalai-book.com
+
+servers:
+  - url: https://api.physicalai-book.com/v1
+    description: Production server
+  - url: https://staging-api.physicalai-book.com/v1
+    description: Staging server
+
+paths:
+  /chat:
+    post:
+      summary: Submit a question to the RAG chatbot
+      description: Process a user's question and return an answer based on book content
+      operationId: submitQuestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+            example:
+              question: "What is embodied intelligence in robotics?"
+              query_type: "global"
+              selected_text: null
+              page_context:
+                module: "module-1"
+                chapter: "chapter-1"
+                url: "/docs/module-1/chapter-1"
+      responses:
+        '200':
+          description: Successful response with answer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponse'
+              example:
+                id: "resp-12345"
+                query_id: "query-67890"
+                answer: "Embodied intelligence refers to the concept where intelligence emerges from the interaction between an agent and its environment..."
+                citations:
+                  - "chunk-m1c1-001"
+                  - "chunk-m1c1-002"
+                confidence: "high"
+                has_answer: true
+                timestamp: "2025-12-18T10:30:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      security:
+        - apiKey: []
+
+components:
+  schemas:
+    QueryRequest:
+      type: object
+      required:
+        - question
+        - query_type
+      properties:
+        question:
+          type: string
+          description: The natural language question from the user
+          example: "What is embodied intelligence in robotics?"
+          minLength: 1
+          maxLength: 2000
+        query_type:
+          type: string
+          enum: [global, selection, page]
+          description: The scope of the query
+          example: "global"
+        selected_text:
+          type: string
+          description: Optional text selected by user for selection-specific queries
+          example: "Embodied intelligence is the concept that intelligence emerges from the interaction..."
+          nullable: true
+        page_context:
+          $ref: '#/components/schemas/PageContext'
+          nullable: true
+      example:
+        question: "What is embodied intelligence in robotics?"
+        query_type: "global"
+        selected_text: null
+        page_context:
+          module: "module-1"
+          chapter: "chapter-1"
+          url: "/docs/module-1/chapter-1"
+
+    PageContext:
+      type: object
+      required:
+        - module
+        - chapter
+        - url
+      properties:
+        module:
+          type: string
+          description: The module identifier
+          example: "module-1"
+        chapter:
+          type: string
+          description: The chapter identifier
+          example: "chapter-1"
+        url:
+          type: string
+          description: The page URL
+          example: "/docs/module-1/chapter-1"
+
+    QueryResponse:
+      type: object
+      required:
+        - id
+        - query_id
+        - answer
+        - citations
+        - confidence
+        - has_answer
+        - timestamp
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the response
+          example: "resp-12345"
+        query_id:
+          type: string
+          description: Reference to the original query
+          example: "query-67890"
+        answer:
+          type: string
+          description: The AI-generated answer based on retrieved content
+          example: "Embodied intelligence refers to the concept where intelligence emerges from the interaction between an agent and its environment..."
+        citations:
+          type: array
+          description: List of chunk IDs that contributed to the response
+          items:
+            type: string
+          example: ["chunk-m1c1-001", "chunk-m1c1-002"]
+        confidence:
+          type: string
+          enum: [high, medium, low]
+          description: Confidence level in the response
+          example: "high"
+        has_answer:
+          type: boolean
+          description: Whether the book content contained the requested information
+          example: true
+        timestamp:
+          type: string
+          format: date-time
+          description: When the response was generated
+          example: "2025-12-18T10:30:00Z"
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Invalid query parameters"
+            message: "Question must be between 1 and 2000 characters"
+
+    RateLimitExceeded:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Rate limit exceeded"
+            message: "Too many requests, please try again later"
+
+    InternalServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Internal server error"
+            message: "An unexpected error occurred, please try again"
+
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      example:
+        error: "Error type"
+        message: "Error description"
+
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication

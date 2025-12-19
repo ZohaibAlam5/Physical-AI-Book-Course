@@ -81,6 +81,20 @@ const sidebars = {
       ],
     },
   ],
+  {
+    type: 'category',
+    label: 'Chatbot Configuration',
+    items: [
+      'chatbot-configuration'
+    ],
+  },
+  {
+    type: 'category',
+    label: 'Website Development',
+    items: [
+      'responsiveness-improvements'
+    ],
+  },
 };
 
 export default sidebars;
