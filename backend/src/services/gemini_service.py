@@ -2,6 +2,7 @@ import logging
 import google.generativeai as genai
 from typing import List, Optional
 from src.config import settings
+from sentence_transformers import SentenceTransformer
 
 logger = logging.getLogger(__name__)
 
@@ -10,14 +11,22 @@ class GeminiService:
     """Service for interacting with Google Gemini API"""
 
     def __init__(self):
-        # Configure the API key
-        genai.configure(api_key=settings.gemini_api_key)
+        # Configure the API key for LLM
+        if settings.gemini_api_key:
+            genai.configure(api_key=settings.gemini_api_key)
+            # Initialize the model
+            self.model_name = settings.gemini_model_name
+            self.model = genai.GenerativeModel(self.model_name)
+            logger.info(f"Initialized Gemini service with model: {self.model_name}")
+        else:
+            logger.warning("GEMINI_API_KEY not set. LLM functionality will not work.")
+            self.model = None
 
-        # Initialize the model
+        # Initialize Sentence Transformer for embeddings
+        self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+        logger.info(f"Initialized Sentence Transformer for embeddings. Dimension: {self.embedding_model.get_sentence_embedding_dimension()}")
+
         self.model_name = settings.gemini_model_name
-        self.model = genai.GenerativeModel(self.model_name)
-
-        logger.info(f"Initialized Gemini service with model: {self.model_name}")
 
     def generate_response(
         self,
@@ -93,7 +102,7 @@ class GeminiService:
 
     def embed_text(self, text: str) -> List[float]:
         """
-        Generate embeddings for the given text using Google's embedding model.
+        Generate embeddings for the given text using Sentence Transformers.
 
         Args:
             text: The text to embed
@@ -102,20 +111,18 @@ class GeminiService:
             List of embedding values
         """
         try:
-            result = genai.embed_content(
-                model="models/embedding-001",  # Google's embedding model
-                content=text,
-                task_type="retrieval_document"  # Appropriate task type for document retrieval
-            )
-            return result['embedding']
+            embedding = self.embedding_model.encode([text])
+            # Convert to list of floats (the model returns numpy arrays)
+            return embedding[0].tolist()
         except Exception as e:
-            logger.error(f"Error generating embeddings from Gemini: {e}")
+            logger.error(f"Error generating embeddings with Sentence Transformers: {e}")
             # Return a zero vector as fallback
-            return [0.0] * 768  # Assuming 768-dim embeddings
+            embedding_dim = self.embedding_model.get_sentence_embedding_dimension()
+            return [0.0] * embedding_dim
 
     def embed_multiple_texts(self, texts: List[str]) -> List[List[float]]:
         """
-        Generate embeddings for multiple texts.
+        Generate embeddings for multiple texts using Sentence Transformers.
 
         Args:
             texts: List of texts to embed
@@ -123,7 +130,20 @@ class GeminiService:
         Returns:
             List of embedding vectors
         """
-        embeddings = []
-        for text in texts:
-            embeddings.append(self.embed_text(text))
-        return embeddings
+        try:
+            embeddings = self.embedding_model.encode(texts)
+            # Convert numpy arrays to lists of floats
+            return [emb.tolist() for emb in embeddings]
+        except Exception as e:
+            logger.error(f"Error generating embeddings for multiple texts with Sentence Transformers: {e}")
+            # Fallback to individual embedding generation
+            embeddings = []
+            embedding_dim = self.embedding_model.get_sentence_embedding_dimension()
+            for text in texts:
+                try:
+                    embedding = self.embedding_model.encode([text])
+                    embeddings.append(embedding[0].tolist())
+                except:
+                    # Return a zero vector as fallback for this text
+                    embeddings.append([0.0] * embedding_dim)
+            return embeddings

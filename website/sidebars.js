@@ -80,20 +80,6 @@ const sidebars = {
         'module-4/chapter-12'
       ],
     },
-    {
-      type: 'category',
-      label: 'Chatbot Configuration',
-      items: [
-        'chatbot-configuration'
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Website Development',
-      items: [
-        'responsiveness-improvements'
-      ],
-    },
   ],
 };
 

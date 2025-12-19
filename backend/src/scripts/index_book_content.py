@@ -8,6 +8,10 @@ from pathlib import Path
 from typing import List, Dict, Any
 import asyncio
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 # Add the backend src directory to the path to import our modules
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
@@ -47,7 +51,10 @@ def main():
         return
 
     # Get the path to the docs directory (relative to the website folder)
-    docs_path = os.path.join(os.path.dirname(__file__), '..', '..', 'website', 'docs')
+    # Use absolute path to ensure it works correctly
+    backend_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+    docs_path = os.path.join(backend_root, '..', 'website', 'docs')
+    docs_path = os.path.abspath(docs_path)  # Convert to absolute path
 
     if not os.path.exists(docs_path):
         logger.error(f"Docs directory not found at {docs_path}")
@@ -97,29 +104,29 @@ def main():
     logger.info("Starting indexing to Qdrant...")
 
     try:
-        # Index all valid chunks
+        # Prepare all chunks for upsertion
+        formatted_chunks = []
         for i, chunk_data in enumerate(valid_chunks_with_embeddings):
             if i % 50 == 0:  # Log progress every 50 chunks
-                logger.info(f"Indexed {i}/{len(valid_chunks_with_embeddings)} chunks...")
+                logger.info(f"Preparing {i}/{len(valid_chunks_with_embeddings)} chunks for indexing...")
 
             # Prepare the point for Qdrant
-            point_data = {
+            formatted_chunk = {
                 'id': chunk_data['id'],
-                'vector': chunk_data['embedding'],
-                'payload': {
-                    'content': chunk_data['text'],
+                'text': chunk_data['text'],
+                'embedding': chunk_data['embedding'],
+                'metadata': {
                     'module': chunk_data['metadata']['module'],
                     'chapter': chunk_data['metadata']['chapter'],
-                    'page_url': chunk_data['metadata']['url'],
+                    'url': chunk_data['metadata']['url'],
                     'heading': chunk_data['metadata']['heading'],
                     'difficulty': chunk_data['metadata']['difficulty'],
-                    'metadata': {}
                 }
             }
+            formatted_chunks.append(formatted_chunk)
 
-            # Add to Qdrant collection
-            qdrant_service.add_point(point_data)
-
+        # Upsert all chunks at once for better performance
+        qdrant_service.upsert_chunks(formatted_chunks)
         logger.info(f"Successfully indexed {len(valid_chunks_with_embeddings)} chunks to Qdrant")
 
     except Exception as e:

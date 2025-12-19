@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     # Run the FastAPI application
     uvicorn.run(
-        "src.api.v1.chat:app",
+        app,
         host=host,
         port=port,
         reload=True,  # Enable auto-reload during development

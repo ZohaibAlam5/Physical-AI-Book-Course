@@ -9,10 +9,10 @@ import uuid
 from typing import Dict, Any, Optional
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, validator
 import google.generativeai as genai
 
-from src.models.query import QueryRequest, QueryResponse, QueryType
+from src.models.query import QueryRequest
+from src.models.response import QueryResponse
 from src.services.rag_service import RAGService
 from src.services.gemini_service import GeminiService
 from src.services.qdrant_service import QdrantService
@@ -40,7 +40,7 @@ app.middleware('http')(rate_limit_middleware.__call__)
 # Initialize services
 gemini_service = GeminiService()
 qdrant_service = QdrantService()
-rag_service = RAGService(gemini_service=gemini_service, qdrant_service=qdrant_service)
+rag_service = RAGService()  # RAGService internally initializes its own services
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -60,14 +60,14 @@ def detailed_health_check():
         "status": "healthy",
         "timestamp": time.time(),
         "services": {
-            "gemini": "connected" if gemini_service.client else "disconnected",
-            "qdrant": "connected" if qdrant_service.client else "disconnected",
+            "gemini": "connected" if rag_service.gemini_service.model else "disconnected",
+            "qdrant": "connected" if rag_service.qdrant_service.client else "disconnected",
         }
     }
     return health_status
 
 
-@app.post("/chat", response_model=QueryResponse)
+@app.post("/chat")
 async def chat_endpoint(query_request: QueryRequest):
     """
     Submit a question to the RAG chatbot.
@@ -78,7 +78,7 @@ async def chat_endpoint(query_request: QueryRequest):
         start_time = time.time()
         logger.info(f"Received query: {query_request.question[:100]}...")
 
-        # Validate the query request
+        # Validate the query request (dataclass validation is done during instantiation)
         if not query_request.question or len(query_request.question.strip()) == 0:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -101,8 +101,9 @@ async def chat_endpoint(query_request: QueryRequest):
         response_time = time.time() - start_time
         logger.info(f"Query processed in {response_time:.2f}s")
 
-        # Add the query ID to the response
-        response.query_id = query_id
+        # Add the query ID to the response if not already set
+        if not hasattr(response, 'query_id') or response.query_id is None:
+            response.query_id = query_id
 
         # Log query type for observability
         logger.info(f"Query type: {query_request.query_type}, Response time: {response_time:.2f}s")
@@ -129,15 +130,23 @@ async def chat_endpoint_v1(query_request: QueryRequest):
 
 
 # Error handlers
+from starlette.responses import JSONResponse
+
 @app.exception_handler(404)
 async def not_found_handler(request, exc):
-    return {"error": "Not found", "message": "The requested endpoint was not found"}
+    return JSONResponse(
+        status_code=404,
+        content={"error": "Not found", "message": "The requested endpoint was not found"}
+    )
 
 
 @app.exception_handler(500)
 async def internal_error_handler(request, exc):
     logger.error(f"Internal server error: {str(exc)}")
-    return {"error": "Internal server error", "message": "An unexpected error occurred"}
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "message": "An unexpected error occurred"}
+    )
 
 
 # Additional utility endpoints

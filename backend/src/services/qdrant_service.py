@@ -35,11 +35,11 @@ class QdrantService:
             logger.info(f"Collection {self.collection_name} already exists")
         except Exception:
             # Create collection if it doesn't exist
-            # Using 768 dimensions for Google embedding models (you might need to adjust based on the specific model)
-            # If using OpenAI embeddings, change to 1536
+            # Using 384 dimensions for Sentence Transformer model 'all-MiniLM-L6-v2'
+            # If using other models, adjust accordingly (Google: 768, OpenAI: 1536)
             self.client.create_collection(
                 collection_name=self.collection_name,
-                vectors_config=VectorParams(size=768, distance=Distance.COSINE),
+                vectors_config=VectorParams(size=384, distance=Distance.COSINE),
             )
 
             # Create payload indexes for fast filtering
@@ -74,21 +74,19 @@ class QdrantService:
         points = []
 
         for chunk_data in chunks:
-            # Create a RetrievedChunk instance to validate the data
-            retrieved_chunk = RetrievedChunk(**chunk_data)
-
-            # Create a Qdrant point
+            # Create a Qdrant point - using the raw chunk data instead of RetrievedChunk
+            # since the embedding might not be present in all chunk_data
             point = PointStruct(
-                id=retrieved_chunk.chunk_id,
-                vector=[0.0] * 768,  # Placeholder - in real implementation, this would be the actual embedding
+                id=chunk_data['id'],
+                vector=chunk_data['embedding'],  # Actual embedding vector
                 payload={
-                    "content": retrieved_chunk.content,
-                    "module": retrieved_chunk.module,
-                    "chapter": retrieved_chunk.chapter,
-                    "page_url": retrieved_chunk.page_url,
-                    "heading": retrieved_chunk.heading,
-                    "difficulty": retrieved_chunk.difficulty,
-                    "metadata": retrieved_chunk.metadata or {}
+                    "content": chunk_data['text'],
+                    "module": chunk_data['metadata']['module'],
+                    "chapter": chunk_data['metadata']['chapter'],
+                    "page_url": chunk_data['metadata']['url'],
+                    "heading": chunk_data['metadata']['heading'],
+                    "difficulty": chunk_data['metadata']['difficulty'],
+                    "metadata": chunk_data['metadata']
                 }
             )
             points.append(point)

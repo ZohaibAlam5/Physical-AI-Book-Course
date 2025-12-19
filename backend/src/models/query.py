@@ -1,59 +1,35 @@
-from pydantic import BaseModel, Field
+from dataclasses import dataclass, field
 from typing import Optional, Dict, Any
 from datetime import datetime
+import re
 
 
-class PageContext(BaseModel):
+@dataclass
+class PageContext:
     """Metadata about the current page for page-specific queries"""
-    module: str = Field(..., description="The module identifier")
-    chapter: str = Field(..., description="The chapter identifier")
-    url: str = Field(..., description="The page URL")
+    module: str
+    chapter: str
+    url: str
 
 
-class QueryRequest(BaseModel):
+@dataclass
+class QueryRequest:
     """Represents a user's request to the chatbot system"""
+    question: str
+    query_type: str
     id: Optional[str] = None
-    question: str = Field(
-        ...,
-        min_length=1,
-        max_length=2000,
-        description="The natural language question from the user"
-    )
-    query_type: str = Field(
-        ...,
-        regex=r"^(global|selection|page)$",
-        description="Type of query: global, selection, or page"
-    )
-    selected_text: Optional[str] = Field(
-        None,
-        description="Text selected by user for selection-specific queries"
-    )
-    page_context: Optional[PageContext] = Field(
-        None,
-        description="Metadata about current page (module, chapter, URL)"
-    )
-    timestamp: datetime = Field(
-        default_factory=datetime.utcnow,
-        description="When the query was submitted"
-    )
-    user_metadata: Optional[Dict[str, Any]] = Field(
-        None,
-        description="Additional context about the user's session"
-    )
+    selected_text: Optional[str] = None
+    page_context: Optional[PageContext] = None
+    timestamp: datetime = field(default_factory=datetime.utcnow)
+    user_metadata: Optional[Dict[str, Any]] = None
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "question": "What is embodied intelligence in robotics?",
-                "query_type": "global",
-                "selected_text": None,
-                "page_context": {
-                    "module": "module-1",
-                    "chapter": "chapter-1",
-                    "url": "/docs/module-1/chapter-1"
-                }
-            }
-        }
+    def __post_init__(self):
+        """Validation after initialization"""
+        if len(self.question) < 1 or len(self.question) > 2000:
+            raise ValueError("Question must be between 1 and 2000 characters")
+
+        if not re.match(r"^(global|selection|page)$", self.query_type):
+            raise ValueError("query_type must be one of: global, selection, page")
 
     def validate_for_selection_type(self):
         """Validate that selected_text is provided when query_type is 'selection'"""

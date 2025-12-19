@@ -8,8 +8,6 @@ from typing import List, Dict, Any
 from pathlib import Path
 import markdown
 from bs4 import BeautifulSoup
-import tiktoken
-from google.generativeai import embedding_utils
 
 
 class ContentChunker:
@@ -28,11 +26,12 @@ class ContentChunker:
         """
         self.max_tokens = max_tokens
         self.overlap_tokens = overlap_tokens
-        self.enc = tiktoken.get_encoding("cl100k_base")  # Good for most models including Google's
 
     def count_tokens(self, text: str) -> int:
-        """Count tokens in a text string."""
-        return len(self.enc.encode(text))
+        """Count tokens in a text string using character approximation."""
+        # A rough approximation: divide character count by 4 to get token count
+        # This is a simple heuristic; actual tokenizers may vary
+        return len(text) // 4
 
     def extract_metadata_from_path(self, file_path: str) -> Dict[str, str]:
         """
@@ -192,11 +191,9 @@ class ContentChunker:
         Split text by character length as a fallback when sentences are too long.
         """
         chunks = []
-        tokens = self.enc.encode(text)
-
-        for i in range(0, len(tokens), self.max_tokens):
-            chunk_tokens = tokens[i:i + self.max_tokens]
-            chunk_text = self.enc.decode(chunk_tokens)
+        # Use simple character-based splitting instead of tokenization
+        for i in range(0, len(text), self.max_tokens * 4):  # Approximate token to character ratio
+            chunk_text = text[i:i + self.max_tokens * 4]
             chunks.append(chunk_text)
 
         return chunks
@@ -204,11 +201,13 @@ class ContentChunker:
     def generate_chunk_id(self, metadata: Dict[str, str], index: int) -> str:
         """
         Generate a stable chunk ID based on metadata and position.
-        Format: chunk-{module}-{chapter}-{index}
+        Using a format compatible with Qdrant (UUID string format)
         """
-        module_clean = metadata['module'].replace('module-', 'm')
-        chapter_clean = metadata['chapter'].replace('chapter-', 'c')
-        return f"chunk-{module_clean}{chapter_clean}-{index:03d}"
+        import uuid
+        # Create a UUID based on the metadata to ensure uniqueness and compatibility
+        unique_string = f"{metadata['module']}_{metadata['chapter']}_{metadata['url']}_{index}"
+        chunk_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, unique_string)
+        return str(chunk_uuid)
 
     def process_markdown_file(self, file_path: str) -> List[Dict[str, Any]]:
         """

@@ -143,10 +143,12 @@ class RateLimitMiddleware:
         # Fallback to client host
         return request.client.host if request.client else "unknown"
 
-    def rate_limit_response(self, reset_time: float, message: str = "Rate limit exceeded"):
+    async def rate_limit_response(self, reset_time: float, message: str = "Rate limit exceeded"):
         """
         Create a rate limit exceeded response.
         """
+        from starlette.responses import JSONResponse
+
         current_time = time.time()
         retry_after = int(reset_time - current_time) + 1  # Add 1 second buffer
 
@@ -157,9 +159,9 @@ class RateLimitMiddleware:
             "Retry-After": str(retry_after)
         }
 
-        return HTTPException(
+        return JSONResponse(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail={
+            content={
                 "error": "Rate limit exceeded",
                 "message": message,
                 "retry_after": retry_after

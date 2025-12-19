@@ -1,39 +1,39 @@
 """
-Google Embedding Utility for the RAG Chatbot
-Handles generating embeddings using Google's embedding models for book content.
+Sentence Transformer Embedding Utility for the RAG Chatbot
+Handles generating embeddings using Sentence Transformers for book content.
 """
 import os
 import logging
 from typing import List, Optional
-import google.generativeai as genai
-from google.generativeai.types import embedding_types
+from sentence_transformers import SentenceTransformer
 
 
-class GoogleEmbeddingService:
+class GoogleEmbeddingService:  # Keeping the name for compatibility
     """
-    Service class for generating embeddings using Google's embedding models.
+    Service class for generating embeddings using Sentence Transformers.
+    NOTE: Despite the name, this now uses Sentence Transformers instead of Google's API.
     """
 
-    def __init__(self, api_key: Optional[str] = None, model_name: str = "models/embedding-001"):
+    def __init__(self, api_key: Optional[str] = None, model_name: str = "all-MiniLM-L6-v2"):
         """
-        Initialize the Google Embedding Service.
+        Initialize the Sentence Transformer Embedding Service.
+        NOTE: api_key parameter is kept for compatibility but not used.
 
         Args:
-            api_key: Google API key (if not provided, will use environment variable)
-            model_name: Name of the embedding model to use
+            api_key: Not used, kept for compatibility
+            model_name: Name of the Sentence Transformer model to use
         """
-        if api_key is None:
-            api_key = os.getenv("GEMINI_API_KEY")
-            if not api_key:
-                raise ValueError("GEMINI_API_KEY environment variable is required")
-
-        genai.configure(api_key=api_key)
         self.model_name = model_name
         self.logger = logging.getLogger(__name__)
 
+        # Download and load the model
+        self.logger.info(f"Loading Sentence Transformer model: {model_name}")
+        self.model = SentenceTransformer(model_name)
+        self.logger.info(f"Model loaded successfully. Embedding dimension: {self.model.get_sentence_embedding_dimension()}")
+
     def generate_embedding(self, text: str) -> List[float]:
         """
-        Generate embedding for a single text using Google's embedding model.
+        Generate embedding for a single text using Sentence Transformers.
 
         Args:
             text: Text to embed
@@ -42,55 +42,37 @@ class GoogleEmbeddingService:
             Embedding vector as a list of floats
         """
         try:
-            # Use Google's embed_content method
-            response = genai.embed_content(
-                model=self.model_name,
-                content=text,
-                task_type="RETRIEVAL_DOCUMENT",  # Appropriate for document chunks
-                title=None  # Can add a title if needed
-            )
-
-            if 'embedding' in response and response['embedding']:
-                return response['embedding']
-            else:
-                self.logger.warning(f"No embedding returned for text: {text[:100]}...")
-                return []
-
+            embedding = self.model.encode([text])
+            # Convert to list of floats (the model returns numpy arrays)
+            return embedding[0].tolist()
         except Exception as e:
             self.logger.error(f"Error generating embedding for text: {str(e)}")
             raise
 
-    def generate_embeddings_batch(self, texts: List[str], batch_size: int = 5) -> List[List[float]]:
+    def generate_embeddings_batch(self, texts: List[str], batch_size: int = 32) -> List[List[float]]:
         """
-        Generate embeddings for a batch of texts using Google's embedding model.
-        This method batches requests to stay within API limits.
+        Generate embeddings for a batch of texts using Sentence Transformers.
+        Sentence Transformers is efficient with batching.
 
         Args:
             texts: List of texts to embed
-            batch_size: Number of texts to process in each batch (Google has limits)
+            batch_size: Number of texts to process in each batch
 
         Returns:
             List of embedding vectors
         """
         embeddings = []
 
-        # Process in batches to respect API limits
+        # Process in batches to manage memory usage
         for i in range(0, len(texts), batch_size):
             batch = texts[i:i + batch_size]
             self.logger.info(f"Processing batch {i//batch_size + 1}/{(len(texts)-1)//batch_size + 1}")
 
             try:
-                # Use Google's embed_content method for batch
-                response = genai.embed_content(
-                    model=self.model_name,
-                    content=batch,
-                    task_type="RETRIEVAL_DOCUMENT",
-                    title=None
-                )
-
-                batch_embeddings = response['embedding']
-                embeddings.extend(batch_embeddings)
-
+                batch_embeddings = self.model.encode(batch)
+                # Convert numpy arrays to lists of floats
+                batch_embeddings_list = [emb.tolist() for emb in batch_embeddings]
+                embeddings.extend(batch_embeddings_list)
             except Exception as e:
                 self.logger.error(f"Error generating embeddings for batch {i//batch_size + 1}: {str(e)}")
                 # Add empty embeddings for failed items to maintain alignment
@@ -130,19 +112,17 @@ class GoogleEmbeddingService:
         Returns:
             Dimension of the embedding vectors
         """
-        # For Google's embedding-001 model, the dimension is typically 768
-        # We'll return the standard dimension for Google's embedding model
-        # In practice, this would be determined dynamically if needed
-        return 768
+        return self.model.get_sentence_embedding_dimension()
 
 
 def create_embedding_for_content(text: str, api_key: Optional[str] = None) -> List[float]:
     """
     Convenience function to create a single embedding for content.
+    NOTE: api_key parameter is kept for compatibility but not used.
 
     Args:
         text: Text to embed
-        api_key: Optional API key (will use env var if not provided)
+        api_key: Not used, kept for compatibility
 
     Returns:
         Embedding vector as a list of floats
@@ -151,17 +131,18 @@ def create_embedding_for_content(text: str, api_key: Optional[str] = None) -> Li
     return service.generate_embedding(text)
 
 
-def create_embeddings_for_contents(texts: List[str], api_key: Optional[str] = None, batch_size: int = 5) -> List[List[float]]:
+def create_embeddings_for_contents(texts: List[str], api_key: Optional[str] = None, batch_size: int = 32) -> List[List[float]]:
     """
     Convenience function to create embeddings for multiple contents.
+    NOTE: api_key parameter is kept for compatibility but not used.
 
     Args:
         texts: List of texts to embed
-        api_key: Optional API key (will use env var if not provided)
+        api_key: Not used, kept for compatibility
         batch_size: Batch size for processing
 
     Returns:
         List of embedding vectors
     """
     service = GoogleEmbeddingService(api_key=api_key)
-    return service.generate_embeddings_batch(texts, batch_size)
+    return service.generate_embeddings_batch(texts, batch_size=batch_size)

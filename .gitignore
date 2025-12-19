@@ -1,0 +1,43 @@
+# Dependencies
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+env.bak/
+venv.bak/
+
+# Virtual Environment
+.env
+.venv
+env/
+
+# Logs
+*.log
+*.log.*
+
+# Docusaurus
+website/build/
+website/.docusaurus/
+website/.cache/
+
+# Backend specific
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/env/
+backend/.env
+backend/venv/
+backend/venv.bak/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
