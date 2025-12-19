@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag-chatbot-backend"
+version = "1.0.0"
+description = "RAG Chatbot Backend for Physical AI & Humanoid Robotics Book"
+authors = [{name = "Zohaib Alam"}]
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
