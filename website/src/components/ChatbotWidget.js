@@ -47,11 +47,11 @@ const ChatbotWidget = ({ apiBaseUrl = 'http://localhost:8000' }) => {
         body: JSON.stringify({
           question: inputValue,
           query_type: 'global', // Default to global search
-          context: {
+          selected_text: null, // Default to null
+          page_context: {
             module: '', // Will be populated based on current page
             chapter: '',
-            page_url: window.location.pathname,
-            selected_text: ''
+            url: window.location.pathname
           }
         })
       });
