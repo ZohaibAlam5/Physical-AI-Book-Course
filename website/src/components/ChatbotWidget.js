@@ -3,6 +3,7 @@ import apiConfig from '../utils/apiConfig';
 import './ChatbotWidget.css';
 
 const ChatbotWidget = ({ apiBaseUrl = 'http://localhost:8000' }) => {
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
