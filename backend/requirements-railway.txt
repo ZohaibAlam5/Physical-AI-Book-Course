@@ -9,7 +9,6 @@ beautifulsoup4==4.12.3
 markdown==3.7
 # Using a smaller sentence transformer model
 sentence-transformers==3.3.0
-# Using CPU-only PyTorch to reduce size
-torch==2.4.0+cpu ; sys_platform != "darwin"
-torch==2.4.0 ; sys_platform == "darwin"
+# PyTorch will be installed with CPU-only version via index URL
+torch==2.4.0
 transformers==4.45.0
