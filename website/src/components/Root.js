@@ -18,7 +18,7 @@ export default function Root({ children }) {
   return (
     <ThemeProvider>
       {children}
-      <React.Suspense fallback={null}>
+      <React.Suspense fallback={process.env.NODE_ENV === 'development' ? <div>Chatbot loading...</div> : null}>
         <ChatbotWidget apiBaseUrl={apiConfig.API_BASE_URL} />
       </React.Suspense>
     </ThemeProvider>
