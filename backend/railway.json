@@ -12,7 +12,7 @@
           ]
         },
         "install": {
-          "cmd": "pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu -r requirements-railway.txt"
+          "cmd": "pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.4.0 && pip install --no-cache-dir -r requirements-railway.txt"
         },
         "start": {
           "cmd": "gunicorn src.api.v1.chat:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"

@@ -14,8 +14,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-# Install CPU-only PyTorch to reduce image size
-RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+# Install CPU-only PyTorch separately to reduce image size
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.4.0
+# Install remaining dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project
 COPY . .
