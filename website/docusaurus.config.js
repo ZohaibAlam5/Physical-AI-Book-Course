@@ -232,11 +232,6 @@ const config = {
     ],
   ],
 
-  // Use the Root component to wrap the app with the theme provider
-  clientModules: [
-    require.resolve('./src/components/Root.js'),
-  ],
-
   // Pass environment variables to the client
   customFields: {
     CHATBOT_API_URL: process.env.CHATBOT_API_URL || process.env.REACT_APP_API_URL || 'http://localhost:8000',
