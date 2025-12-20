@@ -1,0 +1,32 @@
+{
+  "build": {
+    "builder": "NIXPACKS",
+    "nixpacksPlan": {
+      "phases": {
+        "setup": {
+          "nixPkgs": [
+            "python310",
+            "gcc",
+            "git",
+            "curl"
+          ]
+        },
+        "install": [
+          "pip install --no-cache-dir --upgrade pip",
+          "pip install --no-cache-dir -r requirements-railway.txt"
+        ],
+        "start": {
+          "cmd": "gunicorn src.api.v1.chat:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"
+        }
+      },
+      "variables": {
+        "PYTHONPATH": "/app"
+      }
+    }
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "sleepApplication": false,
+    "autoDeploy": true
+  }
+}
