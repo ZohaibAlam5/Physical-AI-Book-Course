@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import apiConfig from '../utils/apiConfig';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext'; // <--- 1. Import Context
 import './ChatbotWidget.css';
 
-const ChatbotWidget = ({ apiBaseUrl = 'http://localhost:8000' }) => {
+const ChatbotWidget = ({ apiBaseUrl }) => {
+  // 2. Get the config from Docusaurus
+  const { siteConfig } = useDocusaurusContext();
+  
+  // 3. Determine the URL: 
+  // Priority: Prop passed in -> Config from Vercel -> Default Localhost
+  // Note: We use 'CHATBOT_API_URL' because that is exactly what you named it in docusaurus.config.js
+  const finalBaseUrl = apiBaseUrl || siteConfig.customFields.CHATBOT_API_URL || 'http://localhost:8000';
 
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -39,20 +46,24 @@ const ChatbotWidget = ({ apiBaseUrl = 'http://localhost:8000' }) => {
     setIsTyping(true);
 
     try {
-      // Call the backend API
-      const response = await fetch(`${apiBaseUrl}/chat`, {
+      // 4. Use finalBaseUrl here instead of apiBaseUrl
+      // Remove any trailing slash to avoid double slashes like //chat
+      const cleanUrl = finalBaseUrl.replace(/\/$/, '');
+      
+      const response = await fetch(`${cleanUrl}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           question: inputValue,
-          query_type: 'global', // Default to global search
-          selected_text: null, // Default to null
+          query_type: 'global',
+          selected_text: null,
           page_context: {
-            module: '', // Will be populated based on current page
+            module: '', 
             chapter: '',
-            url: window.location.pathname
+            // Ensure we are safe during Server Side Rendering
+            url: typeof window !== 'undefined' ? window.location.pathname : ''
           }
         })
       });
