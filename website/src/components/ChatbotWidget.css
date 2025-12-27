@@ -263,4 +263,19 @@
   }
   
   .chat-input {
-    font-size:
+    font-size: 16px;
+  }
+
+  .chatbot-widget {
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .chat-toggle-button {
+    width: 56px; height: 56px;
+    padding: 0; justify-content: center;
+    border-radius: 50%;
+  }
+  .chat-label { display: none; }
+  .chat-icon { font-size: 26px; }
+}
