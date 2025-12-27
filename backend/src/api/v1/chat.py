@@ -35,8 +35,7 @@ app.middleware('http')(rate_limit_middleware.__call__)
 origins = [
     "http://localhost:3000",             # Local development
     "http://localhost:8080",             # Alternative local port
-    "https://your-docusaurus-app.vercel.app", # <--- REPLACE WITH YOUR ACTUAL VERCEL URL
-    "https://your-custom-domain.com"     # If you have one
+    "https://physical-ai-book-course.vercel.app", # <--- REPLACE WITH YOUR ACTUAL VERCEL URL
 ]
 
 app.add_middleware(
