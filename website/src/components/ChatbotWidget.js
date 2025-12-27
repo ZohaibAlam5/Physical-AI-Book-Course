@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'; // <--- IMPORT THIS
 import './ChatbotWidget.css';
 
+// Remove the = '...' part. Leave it empty.
 const ChatbotWidget = ({ apiBaseUrl }) => {
   // --- FIX START ---
   const { siteConfig } = useDocusaurusContext();

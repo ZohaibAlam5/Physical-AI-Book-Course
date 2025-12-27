@@ -234,7 +234,7 @@ const config = {
 
   // Pass environment variables to the client
   customFields: {
-    CHATBOT_API_URL: process.env.CHATBOT_API_URL || process.env.REACT_APP_API_URL || 'http://localhost:8000',
+    CHATBOT_API_URL: 'https://physical-ai-book-course-production.up.railway.app',
   },
 };
 
