@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext'; // <--- 1. Import Context
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext'; // <--- IMPORT THIS
 import './ChatbotWidget.css';
 
 const ChatbotWidget = ({ apiBaseUrl }) => {
-  // 2. Get the config from Docusaurus
+  // --- FIX START ---
   const { siteConfig } = useDocusaurusContext();
   
-  // 3. Determine the URL: 
-  // Priority: Prop passed in -> Config from Vercel -> Default Localhost
-  // Note: We use 'CHATBOT_API_URL' because that is exactly what you named it in docusaurus.config.js
+  // Logic: Use the prop IF provided, otherwise use the Config from Vercel, otherwise fallback to localhost
   const finalBaseUrl = apiBaseUrl || siteConfig.customFields.CHATBOT_API_URL || 'http://localhost:8000';
+  // --- FIX END ---
 
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -46,9 +45,8 @@ const ChatbotWidget = ({ apiBaseUrl }) => {
     setIsTyping(true);
 
     try {
-      // 4. Use finalBaseUrl here instead of apiBaseUrl
-      // Remove any trailing slash to avoid double slashes like //chat
-      const cleanUrl = finalBaseUrl.replace(/\/$/, '');
+      // --- FIX: Use finalBaseUrl ---
+      const cleanUrl = finalBaseUrl.replace(/\/$/, ''); // Remove trailing slash if present
       
       const response = await fetch(`${cleanUrl}/chat`, {
         method: 'POST',
@@ -62,7 +60,7 @@ const ChatbotWidget = ({ apiBaseUrl }) => {
           page_context: {
             module: '', 
             chapter: '',
-            // Ensure we are safe during Server Side Rendering
+            // Safety check for server-side rendering
             url: typeof window !== 'undefined' ? window.location.pathname : ''
           }
         })
