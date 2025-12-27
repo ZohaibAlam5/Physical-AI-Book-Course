@@ -34,7 +34,8 @@
 .chat-window {
   width: 380px;
   height: 600px;
-  background: white;
+  background: white; /* Fixed light background */
+  color: #1a1b1e;    /* UPDATED: Forces dark text to prevent Dark Mode clash */
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   display: flex;
@@ -72,7 +73,7 @@
 .chat-controls {
   display: flex;
   gap: 8px;
-  flex-shrink: 0; /* Prevents buttons from squishing */
+  flex-shrink: 0;
   margin-left: 10px;
 }
 
@@ -99,7 +100,8 @@
   flex: 1;
   padding: 16px;
   overflow-y: auto;
-  background: #f8f9fa;
+  background: #f8f9fa; /* Light grey background */
+  color: #1a1b1e;      /* UPDATED: Forces dark text here as well */
   scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
@@ -108,7 +110,7 @@
 
 .message { 
   max-width: 85%; 
-  font-size: 14.5px; /* Slightly larger text for readability */
+  font-size: 14.5px;
 }
 
 .message.user-message { margin-left: auto; }
@@ -136,7 +138,7 @@
 
 .bot-message .message-text {
   background: white;
-  color: #1a1b1e;
+  color: #1a1b1e; /* Already correct, but redundant safety is good */
   border: 1px solid #e1e4e8;
   border-bottom-left-radius: 4px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
@@ -158,6 +160,7 @@
   padding: 8px;
   font-size: 12px;
   width: 100%;
+  color: #1a1b1e; /* UPDATED: Ensures source text is dark */
 }
 .message-sources summary { color: #667eea; cursor: pointer; font-weight: 600; outline: none; }
 .message-sources ul { margin: 8px 0 0 0; padding-left: 16px; }
@@ -172,8 +175,9 @@
   border-top: 1px solid #eee;
   display: flex;
   gap: 8px;
-  align-items: flex-end; /* Align bottom if textarea grows */
+  align-items: flex-end;
   flex-shrink: 0;
+  color: #1a1b1e; /* UPDATED: Ensures typing area text is dark */
 }
 
 .chat-input {
@@ -187,6 +191,8 @@
   font-family: inherit;
   line-height: 1.4;
   max-height: 100px;
+  background: white; /* Force white input background */
+  color: #1a1b1e;    /* Force dark input text */
 }
 
 .chat-input:focus { border-color: #667eea; box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1); }
@@ -218,12 +224,10 @@
 .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes typing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 
-
 /* =========================================
    MOBILE RESPONSIVENESS FIXES
    ========================================= */
 @media (max-width: 480px) {
-  /* 1. Mobile Bottom Sheet Style */
   .chat-window {
     position: fixed;
     top: auto;
@@ -231,44 +235,37 @@
     left: 0;
     right: 0;
     width: 100%;
-    /* Use dynamic viewport height to handle browser bars */
     height: 80vh; 
     max-height: 80vh;
     border-radius: 20px 20px 0 0;
     box-shadow: 0 -5px 30px rgba(0,0,0,0.15);
   }
 
-  /* 2. Fix Header Cramping */
   .chat-header {
-    padding: 12px 16px; /* Less vertical padding */
+    padding: 12px 16px;
   }
 
   .chat-title {
-    font-size: 14px; /* Smaller text on mobile */
-    /* Allow wrapping but keep it tight */
+    font-size: 14px;
     white-space: normal;
     text-align: left;
-    margin-right: 8px; /* Space before buttons */
+    margin-right: 8px;
   }
 
-  /* 3. Adjust Controls */
   .chat-controls button {
-    width: 32px; /* Slightly easier to tap */
+    width: 32px;
     height: 32px;
   }
 
-  /* 4. Fix Input Area for Mobile Keyboards & Home Bar */
   .chat-input-area {
     padding: 10px 12px;
-    /* Important: Add padding for iPhone Home Indicator */
     padding-bottom: max(10px, env(safe-area-inset-bottom));
   }
   
   .chat-input {
-    font-size: 16px; /* Prevents iOS zoom-in on focus */
+    font-size: 16px;
   }
 
-  /* 5. Button Position */
   .chatbot-widget {
     bottom: 20px;
     right: 20px;

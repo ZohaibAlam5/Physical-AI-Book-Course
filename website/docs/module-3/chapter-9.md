@@ -1,7 +1,7 @@
 ---
 title: "Chapter 9 - Advanced Control Strategies for Humanoid Locomotion"
 description: "Advanced control techniques for stable and efficient humanoid locomotion including adaptive control, robust control, and learning-based approaches"
-sidebar_label: "Advanced Control Strategies for Humanoid Locomotion"
+sidebar_label: "Chapter 9 - Advanced Control Strategies for Humanoid Locomotion"
 ---
 
 # Advanced Control Strategies for Humanoid Locomotion
