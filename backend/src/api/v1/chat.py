@@ -7,9 +7,9 @@ import logging
 import time
 import uuid
 from typing import Dict, Any, Optional
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, Request
 from fastapi.middleware.cors import CORSMiddleware
-import google.generativeai as genai
+# [REMOVED] import google.generativeai as genai <-- This was causing the ModuleNotFoundError
 
 from src.models.query import QueryRequest
 from src.models.response import QueryResponse
@@ -18,24 +18,34 @@ from src.services.gemini_service import GeminiService
 from src.services.qdrant_service import QdrantService
 from src.middleware.rate_limit import RateLimitMiddleware
 
-
 # Initialize FastAPI app
 app = FastAPI(title="RAG Chatbot API for Physical AI & Humanoid Robotics Book",
               description="API for question-answering service based on book content using Google Gemini",
               version="1.0.0")
 
-# Add CORS middleware first
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# --- MIDDLEWARE SETUP (Order is Critical) ---
 
-# Add rate limiting middleware
+# 1. Add Rate Limiter first (in code) so it ends up INNER in the stack
+# This runs AFTER CORS, so valid CORS requests aren't blocked by rate limits immediately
 rate_limit_middleware = RateLimitMiddleware()
 app.middleware('http')(rate_limit_middleware.__call__)
+
+# 2. Add CORS last (in code) so it ends up OUTER-MOST in the stack
+# This runs FIRST on incoming requests to handle OPTIONS/Pre-flight checks
+origins = [
+    "http://localhost:3000",             # Local development
+    "http://localhost:8080",             # Alternative local port
+    "https://your-docusaurus-app.vercel.app", # <--- REPLACE WITH YOUR ACTUAL VERCEL URL
+    "https://your-custom-domain.com"     # If you have one
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,       # Explicit list is required for credentials=True
+    allow_credentials=True,      # Needed if you send cookies or headers
+    allow_methods=["*"],         # Allow all methods (GET, POST, OPTIONS)
+    allow_headers=["*"],         # Allow all headers
+)
 
 # Initialize services
 gemini_service = GeminiService()
@@ -60,7 +70,7 @@ def detailed_health_check():
         "status": "healthy",
         "timestamp": time.time(),
         "services": {
-            "gemini": "connected" if rag_service.gemini_service.model else "disconnected",
+            "gemini": "connected" if rag_service.gemini_service.client else "disconnected",
             "qdrant": "connected" if rag_service.qdrant_service.client else "disconnected",
         }
     }
@@ -71,14 +81,13 @@ def detailed_health_check():
 async def chat_endpoint(query_request: QueryRequest):
     """
     Submit a question to the RAG chatbot.
-
     Process a user's question and return an answer based on book content.
     """
     try:
         start_time = time.time()
         logger.info(f"Received query: {query_request.question[:100]}...")
 
-        # Validate the query request (dataclass validation is done during instantiation)
+        # Validate the query request
         if not query_request.question or len(query_request.question.strip()) == 0:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -95,7 +104,8 @@ async def chat_endpoint(query_request: QueryRequest):
         query_id = f"query-{uuid.uuid4()}"
 
         # Process the query using the RAG service
-        response = await rag_service.process_query(query_request)
+        # NOTE: 'await' removed because process_query is synchronous
+        response = rag_service.process_query(query_request)
 
         # Calculate response time
         response_time = time.time() - start_time
@@ -153,11 +163,10 @@ async def internal_error_handler(request, exc):
 @app.get("/stats")
 async def get_stats():
     """Get basic statistics about the service."""
-    # This would connect to your metrics system in a real implementation
     return {
         "total_queries": 0,  # Would come from a metrics system
-        "avg_response_time": 0.0,  # Would come from a metrics system
-        "uptime": time.time()  # Simple uptime since last restart
+        "avg_response_time": 0.0,
+        "uptime": time.time()
     }
 
 
