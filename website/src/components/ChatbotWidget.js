@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext'; // <--- IMPORT THIS
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext'; 
 import './ChatbotWidget.css';
 
-// Remove the = '...' part. Leave it empty.
-const ChatbotWidget = ({ apiBaseUrl }) => {
-  // --- FIX START ---
-  const { siteConfig } = useDocusaurusContext();
-  
-  // Logic: Use the prop IF provided, otherwise use the Config from Vercel, otherwise fallback to localhost
-  const finalBaseUrl = apiBaseUrl || siteConfig.customFields.CHATBOT_API_URL || 'http://localhost:8000';
-  // --- FIX END ---
+const ChatbotWidget = () => {
+  // --- FINAL FIX: HARDCODED URL ---
+  // We are forcing the widget to use your live Railway server.
+  // This removes any chance of it falling back to localhost.
+  const finalBaseUrl = 'https://physical-ai-book-course-production.up.railway.app'; 
 
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -46,9 +43,11 @@ const ChatbotWidget = ({ apiBaseUrl }) => {
     setIsTyping(true);
 
     try {
-      // --- FIX: Use finalBaseUrl ---
-      const cleanUrl = finalBaseUrl.replace(/\/$/, ''); // Remove trailing slash if present
+      // Remove any potential trailing slash
+      const cleanUrl = finalBaseUrl.replace(/\/$/, '');
       
+      console.log("Sending request to:", `${cleanUrl}/chat`); // Debug log
+
       const response = await fetch(`${cleanUrl}/chat`, {
         method: 'POST',
         headers: {
@@ -61,7 +60,6 @@ const ChatbotWidget = ({ apiBaseUrl }) => {
           page_context: {
             module: '', 
             chapter: '',
-            // Safety check for server-side rendering
             url: typeof window !== 'undefined' ? window.location.pathname : ''
           }
         })
@@ -88,9 +86,10 @@ const ChatbotWidget = ({ apiBaseUrl }) => {
         setMessages(prev => [...prev, errorMessage]);
       }
     } catch (error) {
+      console.error("Fetch error:", error);
       const errorMessage = {
         id: Date.now() + 1,
-        text: `Error: ${error.message || 'Network error'}`,
+        text: `Network Error: Could not connect to server.`,
         sender: 'bot',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
