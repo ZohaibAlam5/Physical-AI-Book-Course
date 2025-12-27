@@ -1,11 +1,36 @@
 .features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
+  padding: 4rem 0;
   width: 100%;
+  background-color: var(--ifm-background-surface-color); /* Subtle background diff */
 }
 
+/* Ensure images scale nicely */
 .featureSvg {
-  height: 200px;
-  width: 200px;
+  height: 150px;
+  width: 150px;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+/* Add hover effect to feature cards */
+.features :global(.col) {
+  padding: 1.5rem;
+  border-radius: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.features :global(.col):hover .featureSvg {
+  transform: scale(1.05);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 996px) {
+  .features {
+    padding: 2rem 0;
+  }
+  
+  /* Add spacing between stacked items on mobile */
+  .features :global(.col) {
+    margin-bottom: 2rem;
+  }
 }

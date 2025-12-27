@@ -1,112 +1,112 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
+/* --- Hero Banner (Pure Green, No Gradient) --- */
 .heroBanner {
-  padding: 4rem 0;
+  padding: 4rem 1rem;
   text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem 0;
-  }
+  /* Removed linear-gradient to eliminate the "white effect" */
+  background-color: var(--ifm-color-primary); 
+  color: white; /* Ensures text remains white on the solid green background */
 }
 
 .buttons {
   display: flex;
-  align-items: center;
   justify-content: center;
   gap: 1rem;
+  margin-top: 2rem;
   flex-wrap: wrap;
 }
 
+/* --- Features Grid Section --- */
 .features {
-  padding: 4rem 0;
-  background-color: var(--ifm-color-emphasis-100);
+  padding: 3rem 0;
+  background-color: var(--ifm-background-surface-color);
+}
+
+.features .container .row {
+  display: grid;
+  /* Auto-fit: Creates 4 columns on desktop, 2 on tablet, 1 on mobile */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Override Docusaurus 'col' styles to function as Flex Cards */
+.features .col {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  flex: none !important;
+  padding: 1.5rem;
+  background: var(--ifm-card-background-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  text-align: left;
+  
+  /* CRITICAL: Flex layout to push buttons to the bottom */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .features h2 {
-  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  color: var(--ifm-color-primary);
+  margin-bottom: 0.75rem;
 }
 
-.features .button {
-  margin-top: 1rem;
+.features p {
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  flex-grow: 1; /* Grows to fill space, pushing button down */
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.5;
 }
 
+/* Full-width Buttons */
+.features .col :global(.button) {
+  width: 100%;
+  margin-top: auto; /* Sticks to the bottom of the card */
+  justify-content: center;
+}
+
+/* --- About Section --- */
 .about {
-  padding: 2rem 0;
+  padding: 4rem 0;
+  text-align: center;
+  background: var(--ifm-color-emphasis-100);
 }
 
 .about h2 {
-  text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  color: var(--ifm-color-primary-dark);
 }
 
 .about p {
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
   font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--ifm-color-emphasis-800);
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 996px) {
-  .features {
-    padding: 2rem 0;
-  }
-
-  .features .row > div {
-    margin-bottom: 2rem;
-  }
-}
-
-/* Enhanced mobile responsiveness for features section */
-@media (max-width: 996px) {
-  .features .col--3 {
-    flex: 0 0 50% !important;
-    max-width: 50% !important;
-  }
-}
-
+/* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
-  .features .col--3 {
-    flex: 0 0 100% !important;
-    max-width: 100% !important;
+  .heroBanner { padding: 3rem 1rem; }
+  .hero__title { font-size: 2rem; }
+  
+  /* Stack Hero buttons on mobile */
+  .buttons { 
+    flex-direction: column; 
+    width: 100%; 
+    max-width: 320px; 
+    margin-left: auto; 
+    margin-right: auto; 
   }
-
-  .features {
-    padding: 2rem 0;
-  }
-
-  .about p {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .heroBanner {
-    padding: 1.5rem 0;
-  }
-
-  .features .row {
-    display: flex;
-    flex-direction: column;
-  }
-
+  .buttons .button { width: 100%; }
+  
+  /* Prevent About section squishing */
   .about .col {
-    flex: 0 0 100% !important;
     max-width: 100% !important;
-  }
-}
-
-/* Improve mobile navigation */
-@media (max-width: 996px) {
-  .navbar__items--right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex: 0 0 100% !important;
+    padding: 0 1rem;
   }
 }
